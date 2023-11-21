@@ -24,3 +24,5 @@ v1_v2_outline_widget <- create_mindmaps(input_file = "outlines/ch7-v1-v2.Rmd")$w
 v1_outline_widget
 v2_outline_widget
 v1_v2_outline_widget
+
+htmlwidgets::saveWidget(v1_v2_outline_widget, file = "outlines/v1_v2_outline_widget.html")
