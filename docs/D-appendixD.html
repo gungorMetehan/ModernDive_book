@@ -23,7 +23,7 @@
 <meta name="author" content="Chester Ismay, Albert Y. Kim, and Arturo Valdivia   Foreword by Kelly S. McConville" />
 
 
-<meta name="date" content="2023-11-11" />
+<meta name="date" content="2023-11-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -2240,63 +2240,60 @@ with?</li>
 <span id="cb709-5"><a href="D-appendixD.html#cb709-5" tabindex="-1"></a>  <span class="fu">group_by</span>(carrier) <span class="sc">%&gt;%</span></span>
 <span id="cb709-6"><a href="D-appendixD.html#cb709-6" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ASM =</span> <span class="fu">sum</span>(ASM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb709-7"><a href="D-appendixD.html#cb709-7" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(ASM))</span></code></pre></div>
-<pre><code># A tibble: 16 × 2
+<pre><code># A tibble: 13 × 2
    carrier         ASM
    &lt;chr&gt;         &lt;dbl&gt;
- 1 UA      15516377526
- 2 DL      10532885801
- 3 B6       9618222135
- 4 AA       3677292231
- 5 US       2533505829
- 6 VX       2296680778
- 7 EV       1817236275
- 8 WN       1718116857
- 9 9E        776970310
-10 HA        642478122
-11 AS        314104736
-12 FL        219628520
-13 F9        184832280
-14 YV         20163632
-15 MQ          7162420
-16 OO          1299835</code></pre>
+ 1 UA      11537511856
+ 2 B6       9614225484
+ 3 DL       8123222440
+ 4 US       2065337222
+ 5 WN       1427468023
+ 6 VX        826542826
+ 7 HA        642478122
+ 8 9E        623141470
+ 9 AS        307662572
+10 EV        224246720
+11 FL        132870700
+12 F9         66633840
+13 OO           550640</code></pre>
 <p>Let’s now break this down step-by-step. To compute the available seat miles for a given flight, we need the <code>distance</code> variable from the <code>flights</code> data frame and the <code>seats</code> variable from the <code>planes</code> data frame, necessitating a join by the key variable <code>tailnum</code> as illustrated in Figure <a href="3-wrangling.html#fig:reldiagram">3.7</a>. To keep the resulting data frame easy to view, we’ll <code>select()</code> only these two variables and <code>carrier</code>:</p>
 <div class="sourceCode" id="cb711"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb711-1"><a href="D-appendixD.html#cb711-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb711-2"><a href="D-appendixD.html#cb711-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb711-3"><a href="D-appendixD.html#cb711-3" tabindex="-1"></a>  <span class="fu">select</span>(carrier, seats, distance)</span></code></pre></div>
-<pre><code># A tibble: 284,170 × 3
+<pre><code># A tibble: 175,302 × 3
    carrier seats distance
    &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt;
  1 UA        149     1400
  2 UA        149     1416
- 3 AA        178     1089
- 4 B6        200     1576
- 5 DL        178      762
- 6 UA        191      719
- 7 B6        200     1065
- 8 EV         55      229
- 9 B6        200      944
-10 B6        200     1028
-# ℹ 284,160 more rows</code></pre>
+ 3 B6        200     1576
+ 4 DL        178      762
+ 5 UA        191      719
+ 6 B6        200     1065
+ 7 B6        200      944
+ 8 B6        200     1028
+ 9 B6        200     1005
+10 UA        191     2565
+# ℹ 175,292 more rows</code></pre>
 <p>Now for each flight we can compute the available seat miles <code>ASM</code> by multiplying the number of seats by the distance via a <code>mutate()</code>:</p>
 <div class="sourceCode" id="cb713"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb713-1"><a href="D-appendixD.html#cb713-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb713-2"><a href="D-appendixD.html#cb713-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb713-3"><a href="D-appendixD.html#cb713-3" tabindex="-1"></a>  <span class="fu">select</span>(carrier, seats, distance) <span class="sc">%&gt;%</span></span>
 <span id="cb713-4"><a href="D-appendixD.html#cb713-4" tabindex="-1"></a>  <span class="co"># Added:</span></span>
 <span id="cb713-5"><a href="D-appendixD.html#cb713-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ASM =</span> seats <span class="sc">*</span> distance)</span></code></pre></div>
-<pre><code># A tibble: 284,170 × 4
+<pre><code># A tibble: 175,302 × 4
    carrier seats distance    ASM
    &lt;chr&gt;   &lt;int&gt;    &lt;dbl&gt;  &lt;dbl&gt;
  1 UA        149     1400 208600
  2 UA        149     1416 210984
- 3 AA        178     1089 193842
- 4 B6        200     1576 315200
- 5 DL        178      762 135636
- 6 UA        191      719 137329
- 7 B6        200     1065 213000
- 8 EV         55      229  12595
- 9 B6        200      944 188800
-10 B6        200     1028 205600
-# ℹ 284,160 more rows</code></pre>
+ 3 B6        200     1576 315200
+ 4 DL        178      762 135636
+ 5 UA        191      719 137329
+ 6 B6        200     1065 213000
+ 7 B6        200      944 188800
+ 8 B6        200     1028 205600
+ 9 B6        200     1005 201000
+10 UA        191     2565 489915
+# ℹ 175,292 more rows</code></pre>
 <p>Next we want to sum the <code>ASM</code> for each carrier. We achieve this by first grouping by <code>carrier</code> and then summarizing using the <code>sum()</code> function:</p>
 <div class="sourceCode" id="cb715"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb715-1"><a href="D-appendixD.html#cb715-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb715-2"><a href="D-appendixD.html#cb715-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -2305,25 +2302,22 @@ with?</li>
 <span id="cb715-5"><a href="D-appendixD.html#cb715-5" tabindex="-1"></a>  <span class="co"># Added:</span></span>
 <span id="cb715-6"><a href="D-appendixD.html#cb715-6" tabindex="-1"></a>  <span class="fu">group_by</span>(carrier) <span class="sc">%&gt;%</span></span>
 <span id="cb715-7"><a href="D-appendixD.html#cb715-7" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ASM =</span> <span class="fu">sum</span>(ASM))</span></code></pre></div>
-<pre><code># A tibble: 16 × 2
+<pre><code># A tibble: 13 × 2
    carrier         ASM
    &lt;chr&gt;         &lt;dbl&gt;
- 1 9E        776970310
- 2 AA       3677292231
- 3 AS        314104736
- 4 B6       9618222135
- 5 DL      10532885801
- 6 EV       1817236275
- 7 F9        184832280
- 8 FL        219628520
- 9 HA        642478122
-10 MQ          7162420
-11 OO          1299835
-12 UA      15516377526
-13 US       2533505829
-14 VX       2296680778
-15 WN       1718116857
-16 YV         20163632</code></pre>
+ 1 9E        623141470
+ 2 AS        307662572
+ 3 B6       9614225484
+ 4 DL       8123222440
+ 5 EV        224246720
+ 6 F9         66633840
+ 7 FL        132870700
+ 8 HA        642478122
+ 9 OO           550640
+10 UA      11537511856
+11 US       2065337222
+12 VX        826542826
+13 WN       1427468023</code></pre>
 <p>However, because for certain carriers certain flights have missing <code>NA</code> values, the resulting table also returns <code>NA</code>’s. We can eliminate these by adding a <code>na.rm = TRUE</code> argument to <code>sum()</code>, telling R that we want to remove the <code>NA</code>’s in the sum. We saw this in Section <a href="3-wrangling.html#summarize">3.3</a>:</p>
 <div class="sourceCode" id="cb717"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb717-1"><a href="D-appendixD.html#cb717-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb717-2"><a href="D-appendixD.html#cb717-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -2332,25 +2326,22 @@ with?</li>
 <span id="cb717-5"><a href="D-appendixD.html#cb717-5" tabindex="-1"></a>  <span class="fu">group_by</span>(carrier) <span class="sc">%&gt;%</span></span>
 <span id="cb717-6"><a href="D-appendixD.html#cb717-6" tabindex="-1"></a>  <span class="co"># Modified:</span></span>
 <span id="cb717-7"><a href="D-appendixD.html#cb717-7" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ASM =</span> <span class="fu">sum</span>(ASM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
-<pre><code># A tibble: 16 × 2
+<pre><code># A tibble: 13 × 2
    carrier         ASM
    &lt;chr&gt;         &lt;dbl&gt;
- 1 9E        776970310
- 2 AA       3677292231
- 3 AS        314104736
- 4 B6       9618222135
- 5 DL      10532885801
- 6 EV       1817236275
- 7 F9        184832280
- 8 FL        219628520
- 9 HA        642478122
-10 MQ          7162420
-11 OO          1299835
-12 UA      15516377526
-13 US       2533505829
-14 VX       2296680778
-15 WN       1718116857
-16 YV         20163632</code></pre>
+ 1 9E        623141470
+ 2 AS        307662572
+ 3 B6       9614225484
+ 4 DL       8123222440
+ 5 EV        224246720
+ 6 F9         66633840
+ 7 FL        132870700
+ 8 HA        642478122
+ 9 OO           550640
+10 UA      11537511856
+11 US       2065337222
+12 VX        826542826
+13 WN       1427468023</code></pre>
 <p>Finally, we <code>arrange()</code> the data in <code>desc()</code>ending order of <code>ASM</code>.</p>
 <div class="sourceCode" id="cb719"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb719-1"><a href="D-appendixD.html#cb719-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb719-2"><a href="D-appendixD.html#cb719-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -2360,25 +2351,22 @@ with?</li>
 <span id="cb719-6"><a href="D-appendixD.html#cb719-6" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ASM =</span> <span class="fu">sum</span>(ASM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb719-7"><a href="D-appendixD.html#cb719-7" tabindex="-1"></a>  <span class="co"># Added:</span></span>
 <span id="cb719-8"><a href="D-appendixD.html#cb719-8" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(ASM))</span></code></pre></div>
-<pre><code># A tibble: 16 × 2
+<pre><code># A tibble: 13 × 2
    carrier         ASM
    &lt;chr&gt;         &lt;dbl&gt;
- 1 UA      15516377526
- 2 DL      10532885801
- 3 B6       9618222135
- 4 AA       3677292231
- 5 US       2533505829
- 6 VX       2296680778
- 7 EV       1817236275
- 8 WN       1718116857
- 9 9E        776970310
-10 HA        642478122
-11 AS        314104736
-12 FL        219628520
-13 F9        184832280
-14 YV         20163632
-15 MQ          7162420
-16 OO          1299835</code></pre>
+ 1 UA      11537511856
+ 2 B6       9614225484
+ 3 DL       8123222440
+ 4 US       2065337222
+ 5 WN       1427468023
+ 6 VX        826542826
+ 7 HA        642478122
+ 8 9E        623141470
+ 9 AS        307662572
+10 EV        224246720
+11 FL        132870700
+12 F9         66633840
+13 OO           550640</code></pre>
 <p>While the above data frame is correct, the IATA <code>carrier</code> code is not always useful. For example, what carrier is <code>WN</code>? We can address this by joining with the <code>airlines</code> dataset using <code>carrier</code> is the key variable. While this step is not absolutely required, it goes a long way to making the table easier to make sense of. It is important to be empathetic with the ultimate consumers of your presented data!</p>
 <div class="sourceCode" id="cb721"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb721-1"><a href="D-appendixD.html#cb721-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb721-2"><a href="D-appendixD.html#cb721-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(planes, <span class="at">by =</span> <span class="st">&quot;tailnum&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -2389,25 +2377,18 @@ with?</li>
 <span id="cb721-7"><a href="D-appendixD.html#cb721-7" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(ASM)) <span class="sc">%&gt;%</span></span>
 <span id="cb721-8"><a href="D-appendixD.html#cb721-8" tabindex="-1"></a>  <span class="co"># Added:</span></span>
 <span id="cb721-9"><a href="D-appendixD.html#cb721-9" tabindex="-1"></a>  <span class="fu">inner_join</span>(airlines, <span class="at">by =</span> <span class="st">&quot;carrier&quot;</span>)</span></code></pre></div>
-<pre><code># A tibble: 16 × 3
-   carrier         ASM name                       
-   &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;                      
- 1 UA      15516377526 United Air Lines Inc.      
- 2 DL      10532885801 Delta Air Lines Inc.       
- 3 B6       9618222135 JetBlue Airways            
- 4 AA       3677292231 American Airlines Inc.     
- 5 US       2533505829 US Airways Inc.            
- 6 VX       2296680778 Virgin America             
- 7 EV       1817236275 ExpressJet Airlines Inc.   
- 8 WN       1718116857 Southwest Airlines Co.     
- 9 9E        776970310 Endeavor Air Inc.          
-10 HA        642478122 Hawaiian Airlines Inc.     
-11 AS        314104736 Alaska Airlines Inc.       
-12 FL        219628520 AirTran Airways Corporation
-13 F9        184832280 Frontier Airlines Inc.     
-14 YV         20163632 Mesa Airlines Inc.         
-15 MQ          7162420 Envoy Air                  
-16 OO          1299835 SkyWest Airlines Inc.      </code></pre>
+<pre><code># A tibble: 9 × 3
+  carrier         ASM name                  
+  &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;                 
+1 UA      11537511856 United Air Lines Inc. 
+2 B6       9614225484 JetBlue Airways       
+3 DL       8123222440 Delta Air Lines Inc.  
+4 WN       1427468023 Southwest Airlines Co.
+5 HA        642478122 Hawaiian Airlines Inc.
+6 9E        623141470 Endeavor Air Inc.     
+7 AS        307662572 Alaska Airlines Inc.  
+8 F9         66633840 Frontier Airlines Inc.
+9 OO           550640 SkyWest Airlines Inc. </code></pre>
 <hr />
 </div>
 <div id="chapter-4-solutions" class="section level2 hasAnchor" number="15.4">
@@ -2607,186 +2588,6 @@ $ age     &lt;int&gt; 36, 36, 36, 36, 59, 59, 59, 51, 51, 40, 40, 40, 40, 40, 40
 <div class="sourceCode" id="cb745"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb745-1"><a href="D-appendixD.html#cb745-1" tabindex="-1"></a>evals_ch5 <span class="sc">%&gt;%</span></span>
 <span id="cb745-2"><a href="D-appendixD.html#cb745-2" tabindex="-1"></a>  <span class="fu">select</span>(score, age) <span class="sc">%&gt;%</span></span>
 <span id="cb745-3"><a href="D-appendixD.html#cb745-3" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div>
-<table style="width: auto;" class="table table-condensed">
-<caption>
-<span id="tab:unnamed-chunk-660">TABLE D.1: </span>Data summary
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Name
-</td>
-<td style="text-align:left;">
-Piped data
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of rows
-</td>
-<td style="text-align:left;">
-463
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of columns
-</td>
-<td style="text-align:left;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-_______________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Column type frequency:
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-________________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Group variables
-</td>
-<td style="text-align:left;">
-None
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:right;">
-mean
-</th>
-<th style="text-align:right;">
-sd
-</th>
-<th style="text-align:right;">
-p0
-</th>
-<th style="text-align:right;">
-p25
-</th>
-<th style="text-align:right;">
-p50
-</th>
-<th style="text-align:right;">
-p75
-</th>
-<th style="text-align:right;">
-p100
-</th>
-<th style="text-align:left;">
-hist
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-score
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4.17
-</td>
-<td style="text-align:right;">
-0.54
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:left;">
-▁▁▅▇▇
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-age
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-48.37
-</td>
-<td style="text-align:right;">
-9.80
-</td>
-<td style="text-align:right;">
-29.0
-</td>
-<td style="text-align:right;">
-42.0
-</td>
-<td style="text-align:right;">
-48.0
-</td>
-<td style="text-align:right;">
-57.0
-</td>
-<td style="text-align:right;">
-73
-</td>
-<td style="text-align:left;">
-▅▆▇▆▁
-</td>
-</tr>
-</tbody>
-</table>
 <p>(Note that for formatting purposes, the inline histogram that is usually printed with skim() has been removed. This can be done by running <code>skim_with(numeric = list(hist = NULL), integer = list(hist = NULL))</code> prior to using the <code>skim()</code> function as well.)</p>
 <ul>
 <li>Creating data visualizations:</li>
@@ -2866,206 +2667,6 @@ $ gdpPercap &lt;dbl&gt; 975, 5937, 6223, 4797, 12779, 34435, 36126, 29796, 1391,
 <div class="sourceCode" id="cb753"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb753-1"><a href="D-appendixD.html#cb753-1" tabindex="-1"></a>gapminder2007 <span class="sc">%&gt;%</span></span>
 <span id="cb753-2"><a href="D-appendixD.html#cb753-2" tabindex="-1"></a>  <span class="fu">select</span>(gdpPercap, continent) <span class="sc">%&gt;%</span></span>
 <span id="cb753-3"><a href="D-appendixD.html#cb753-3" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div>
-<table style="width: auto;" class="table table-condensed">
-<caption>
-<span id="tab:unnamed-chunk-665">TABLE D.2: </span>Data summary
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Name
-</td>
-<td style="text-align:left;">
-Piped data
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of rows
-</td>
-<td style="text-align:left;">
-142
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of columns
-</td>
-<td style="text-align:left;">
-2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-_______________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Column type frequency:
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-factor
-</td>
-<td style="text-align:left;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-________________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Group variables
-</td>
-<td style="text-align:left;">
-None
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: factor</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:left;">
-ordered
-</th>
-<th style="text-align:right;">
-n_unique
-</th>
-<th style="text-align:left;">
-top_counts
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-continent
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:left;">
-Afr: 52, Asi: 33, Eur: 30, Ame: 25
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:right;">
-mean
-</th>
-<th style="text-align:right;">
-sd
-</th>
-<th style="text-align:right;">
-p0
-</th>
-<th style="text-align:right;">
-p25
-</th>
-<th style="text-align:right;">
-p50
-</th>
-<th style="text-align:right;">
-p75
-</th>
-<th style="text-align:right;">
-p100
-</th>
-<th style="text-align:left;">
-hist
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-gdpPercap
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-11680
-</td>
-<td style="text-align:right;">
-12860
-</td>
-<td style="text-align:right;">
-278
-</td>
-<td style="text-align:right;">
-1625
-</td>
-<td style="text-align:right;">
-6124
-</td>
-<td style="text-align:right;">
-18009
-</td>
-<td style="text-align:right;">
-49357
-</td>
-<td style="text-align:left;">
-▇▂▁▂▁
-</td>
-</tr>
-</tbody>
-</table>
 <ul>
 <li>Creating data visualizations:</li>
 </ul>
@@ -3203,221 +2804,6 @@ FIGURE D.2: Regression line and two others.
 <div class="sourceCode" id="cb763"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb763-1"><a href="D-appendixD.html#cb763-1" tabindex="-1"></a>credit_ch6 <span class="sc">%&gt;%</span></span>
 <span id="cb763-2"><a href="D-appendixD.html#cb763-2" tabindex="-1"></a>  <span class="fu">select</span>(debt, credit_rating, age) <span class="sc">%&gt;%</span></span>
 <span id="cb763-3"><a href="D-appendixD.html#cb763-3" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div>
-<table style="width: auto;" class="table table-condensed">
-<caption>
-<span id="tab:unnamed-chunk-675">TABLE D.3: </span>Data summary
-</caption>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Name
-</td>
-<td style="text-align:left;">
-Piped data
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of rows
-</td>
-<td style="text-align:left;">
-400
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Number of columns
-</td>
-<td style="text-align:left;">
-3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-_______________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Column type frequency:
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-numeric
-</td>
-<td style="text-align:left;">
-3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-________________________
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Group variables
-</td>
-<td style="text-align:left;">
-None
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-skim_variable
-</th>
-<th style="text-align:right;">
-n_missing
-</th>
-<th style="text-align:right;">
-complete_rate
-</th>
-<th style="text-align:right;">
-mean
-</th>
-<th style="text-align:right;">
-sd
-</th>
-<th style="text-align:right;">
-p0
-</th>
-<th style="text-align:right;">
-p25
-</th>
-<th style="text-align:right;">
-p50
-</th>
-<th style="text-align:right;">
-p75
-</th>
-<th style="text-align:right;">
-p100
-</th>
-<th style="text-align:left;">
-hist
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-debt
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-520.0
-</td>
-<td style="text-align:right;">
-459.8
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-68.8
-</td>
-<td style="text-align:right;">
-460
-</td>
-<td style="text-align:right;">
-863
-</td>
-<td style="text-align:right;">
-1999
-</td>
-<td style="text-align:left;">
-▇▅▃▂▁
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-credit_rating
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-354.9
-</td>
-<td style="text-align:right;">
-154.7
-</td>
-<td style="text-align:right;">
-93
-</td>
-<td style="text-align:right;">
-247.2
-</td>
-<td style="text-align:right;">
-344
-</td>
-<td style="text-align:right;">
-437
-</td>
-<td style="text-align:right;">
-982
-</td>
-<td style="text-align:left;">
-▆▇▃▁▁
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-age
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-55.7
-</td>
-<td style="text-align:right;">
-17.2
-</td>
-<td style="text-align:right;">
-23
-</td>
-<td style="text-align:right;">
-41.8
-</td>
-<td style="text-align:right;">
-56
-</td>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-98
-</td>
-<td style="text-align:left;">
-▆▇▇▇▁
-</td>
-</tr>
-</tbody>
-</table>
 <ul>
 <li>Creating data visualizations.</li>
 </ul>
@@ -3554,7 +2940,7 @@ It seems that there is a positive relationship between one’s credit rating and
 <p>A bootstrap sample is a smaller sample that is “bootstrapped” from a larger sample. Bootstrapping is a type of resampling where large numbers of smaller samples of the same size are repeatedly drawn, with replacement, from a single original sample.</p>
 <p><strong>(LC8.2)</strong> Looking at the bootstrap distribution for the sample mean in Figure <a href="8-confidence-intervals.html#fig:one-thousand-sample-means">8.14</a>, between what two values would you say <em>most</em> values lie?</p>
 <p><strong>Solution</strong>:</p>
-<p><em>Most</em> values lie in 1990 amd 2000.</p>
+<p><em>Most</em> values lie in 1990 and 2000.</p>
 <p><strong>(LC8.3)</strong> What condition about the bootstrap distribution must be met for us to be able to construct confidence intervals using the standard error method?</p>
 <p><strong>Solution</strong>:</p>
 <p>We can only use the standard error rule when the bootstrap distribution is roughly normally distributed.</p>
@@ -3883,7 +3269,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["ModernDive.pdf"],
 "search": {
 "engine": "fuse",
 "options": null

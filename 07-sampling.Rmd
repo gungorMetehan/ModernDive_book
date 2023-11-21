@@ -989,7 +989,7 @@ num_pop_almonds <- length(almonds_bowl$weight)
 
 The first variable `ID` represents a virtual ID number given to each almond, and the variable `weight` contains the weight in grams for each almond in the bowl. The **population mean** weight of almonds, a population parameter, can be obtained in R using again the `dplyr` data wrangling verbs presented in Chapter \@ref(wrangling). Observe, in particular, inside the function `summarize()` the use of the `mean()`, `sd()`, and `n()` functions for the mean weight, the weight's standard deviation[^2], and the number of almonds in the bowl:
 
-[^2]: As explained earlier, this function produces the sample standard deviation, which divides the sum of square deviations by n-1 instead of n, but for a list of 5000 observation the difference is not relevant, for practical purposes.
+[^2]: As explained earlier, this function produces the sample standard deviation, which divides the sum of square deviations by $n-1$ instead of $n$, but for a list of 5000 observations the difference is not relevant, for practical purposes.
 
 ```{r}
 almonds_bowl |> 
