@@ -17,7 +17,8 @@ v2_outline_widget <- create_mindmaps(input_file = "07-sampling.Rmd")$widget
 v1_outline_widget <- create_mindmaps(input_file = "07-sampling-OLD.Rmd")$widget
 
 # Combined mindmap copying all of the 07-sampling-OLD.Rmd text and then the
-# 07-sampling.Rmd text into the ch7-v1-v2.Rmd file
+# 07-sampling.Rmd text into the ch7-v1-v2.Rmd file, renaming the
+# titles to be "Sampling v1" and "Sampling v2"
 v1_v2_outline_widget <- create_mindmaps(input_file = "outlines/ch7-v1-v2.Rmd")$widget
 
 # Open widgets in RStudio Viewer
@@ -25,4 +26,5 @@ v1_outline_widget
 v2_outline_widget
 v1_v2_outline_widget
 
+# Save widget to file
 htmlwidgets::saveWidget(v1_v2_outline_widget, file = "outlines/v1_v2_outline_widget.html")
