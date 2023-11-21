@@ -100,7 +100,7 @@ write_bib(
     "bookdown", "broom", "dplyr", "dygraphs", "fivethirtyeight", "ggplot2", 
     "ggplot2movies", "infer", "janitor", "kableExtra", "knitr", "moderndive", 
     "nycflights13", "readr", "rmarkdown", "skimr", "tibble", "tidyr", 
-    "tidyverse", "webshot"
+    "tidyverse", "webshot", "fs"
   ),
   here::here("bib", "packages.bib")
 )
@@ -160,9 +160,7 @@ if (is_html_output()) {
   # Copy over v1 and v2 outline files
   from_vec <- here::here("outlines")
   to_vec <- here::here("docs", "outlines")
-  purrr::walk2(from_vec, to_vec, file.copy, overwrite = TRUE)
-  
-  
+  fs::dir_copy(from_vec, to_vec, overwrite = TRUE)
   
   # Copy all needed csv and txt files to docs/
   if (!dir.exists(here::here("docs", "data"))) {
